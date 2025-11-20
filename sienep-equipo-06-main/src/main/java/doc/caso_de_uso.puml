@@ -1,0 +1,92 @@
+@startuml
+left to right direction
+skinparam packageStyle rectangle
+skinparam actorStyle awesome
+skinparam usecaseBorderColor Black
+skinparam usecaseBackgroundColor White
+
+actor "Administrador" as Admin
+
+rectangle "SIENEP - Administración y Seguridad" {
+
+  ' ================== Seguridad / Autenticación ==================
+  package "Seguridad y Sesión" {
+    usecase "UC01\nAutenticar usuario" as UC_Login
+    usecase "Cerrar sesión" as UC_Logout
+    usecase "Verificar permisos\ny sesión activa" as UC_VerificarPermisos
+  }
+
+  ' ================== Gestión de Usuarios ==================
+  package "Gestión de Usuarios" {
+    usecase "UC02\nGestionar usuarios" as UC_GestionUsuarios
+
+    usecase "Listar usuarios" as UC_ListarUsuarios
+    usecase "Crear usuario" as UC_CrearUsuario
+    usecase "Editar usuario" as UC_EditarUsuario
+    usecase "Eliminar usuario\n(baja lógica)" as UC_EliminarUsuario
+    usecase "Cambiar contraseña\nde usuario" as UC_CambiarContrasenia
+  }
+
+  ' ================== Gestión de Roles ==================
+  package "Gestión de Roles" {
+    usecase "UC03\nGestionar roles" as UC_GestionRoles
+
+    usecase "Listar roles" as UC_ListarRoles
+    usecase "Crear rol" as UC_CrearRol
+    usecase "Editar rol" as UC_EditarRol
+    usecase "Eliminar rol" as UC_EliminarRol
+    usecase "Asignar permisos\na rol" as UC_AsignarPermisosRol
+  }
+
+  ' ================== Gestión de Permisos ==================
+  package "Gestión de Permisos" {
+    usecase "UC04\nGestionar permisos" as UC_GestionPermisos
+
+    usecase "Listar permisos" as UC_ListarPermisos
+    usecase "Crear permiso" as UC_CrearPermiso
+    usecase "Editar permiso" as UC_EditarPermiso
+    usecase "Eliminar permiso" as UC_EliminarPermiso
+  }
+}
+
+' ================== Relaciones Actor - Casos de uso ==================
+Admin --> UC_Login
+Admin --> UC_Logout
+
+Admin --> UC_GestionUsuarios
+Admin --> UC_GestionRoles
+Admin --> UC_GestionPermisos
+Admin --> UC_VerificarPermisos
+
+' ================== Relaciones entre Casos de Uso ==================
+
+' Para gestionar cualquier cosa, primero debe autenticarse
+UC_GestionUsuarios .> UC_Login : <<include>>
+UC_GestionRoles .> UC_Login : <<include>>
+UC_GestionPermisos .> UC_Login : <<include>>
+UC_VerificarPermisos .> UC_Login : <<include>>
+
+' --- Descomposición de Gestión de Usuarios ---
+UC_GestionUsuarios .> UC_ListarUsuarios : <<include>>
+UC_GestionUsuarios .> UC_CrearUsuario : <<include>>
+UC_GestionUsuarios .> UC_EditarUsuario : <<include>>
+UC_GestionUsuarios .> UC_EliminarUsuario : <<include>>
+UC_GestionUsuarios .> UC_CambiarContrasenia : <<include>>
+
+' --- Descomposición de Gestión de Roles ---
+UC_GestionRoles .> UC_ListarRoles : <<include>>
+UC_GestionRoles .> UC_CrearRol : <<include>>
+UC_GestionRoles .> UC_EditarRol : <<include>>
+UC_GestionRoles .> UC_EliminarRol : <<include>>
+UC_GestionRoles .> UC_AsignarPermisosRol : <<include>>
+
+' --- Descomposición de Gestión de Permisos ---
+UC_GestionPermisos .> UC_ListarPermisos : <<include>>
+UC_GestionPermisos .> UC_CrearPermiso : <<include>>
+UC_GestionPermisos .> UC_EditarPermiso : <<include>>
+UC_GestionPermisos .> UC_EliminarPermiso : <<include>>
+
+' Asignar permisos a rol se apoya en la gestión/listado de permisos
+UC_AsignarPermisosRol .> UC_ListarPermisos : <<include>>
+
+@enduml
